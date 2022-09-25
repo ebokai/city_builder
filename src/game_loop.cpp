@@ -30,7 +30,7 @@ void Game::game_loop(){
 	int x_mouse, y_mouse;
 	int x_cell, y_cell;
 	int cell_type = 1;
-	int n_updates_per_frame = 1;
+	int n_updates_per_frame = 100;
 
 	const char* cell_types[4] = { "Earth", "Trees", "Water", "Swamp"};
 
@@ -64,6 +64,67 @@ void Game::game_loop(){
 			grid_states[x_cell][y_cell] = cell_type;
 		}
 
+		for(int i = 0; i < n_updates_per_frame; i++){
+			cell_dynamics(1, 0, 1, 1, 1); // grow trees
+			cell_dynamics(1, 0, 2, 2, 1, 0.5); // grow water
+			cell_dynamics(1, 1, 0, 3, 4); // too much earth around trees creates grass
+			cell_dynamics(1, 2, 0, 4, 4); // too much earth around water creates wet earth
+			cell_dynamics(1, 1, 2, 5, 2); // too much water around trees creates swamp
+
+			cell_dynamics(1, 2, 2, 6, 5); // deep water
+			cell_dynamics(1, 6, 6, 9, 3); // deeper water 
+			
+			cell_dynamics(1, 1, 1, 7, 5); // dense forest
+			cell_dynamics(1, 4, 4, 0, 0); // wet earth dries
+
+			cell_dynamics(1, 2, 6, 6, 3); // deep water spreads
+			cell_dynamics(1, 6, 9, 9, 3); // deeper water spreads
+			cell_dynamics(1, 2, 9, 9, 3); // deeper water spreads
+			
+			cell_dynamics(1, 1, 7, 7, 3); // dense forest spreads
+			cell_dynamics(1, 3, 7, 7, 3); // dense forest spreads over grass
+			cell_dynamics(1, 1, 8, 8, 0, 0.25); // forest catches fire
+			cell_dynamics(1, 3, 8, 8, 0, 0.5); // grass catches fire
+			cell_dynamics(1, 7, 8, 8, 0, 0.125); // dense forest catches fire
+			cell_dynamics(1, 8, 8, 0, 0); // fire goes out
+			cell_dynamics(1, 2, 8, 0, 2, 0.5); // fire dries shallow water
+			cell_dynamics(1, 7, 7, 8, 5, 0.0001); // dense forest starts fire
+
+			cell_dynamics(1, 10, 10, 0, 0, 0.01); // snow disappears
+
+			cell_dynamics(1, 2, 1, 1, 2, 0.5); // water can replace trees
+			cell_dynamics(1, 1, 2, 2, 2, 0.5); // trees can replace water
+			cell_dynamics(1, 7, 7, 1, 2, 0.25); // dense forest can shrink
+			cell_dynamics(1, 9, 0, 6, 1, 0.05); // deeper water can dry up
+			cell_dynamics(1, 9, 1, 6, 1, 0.05); // deeper water can dry up
+			cell_dynamics(1, 9, 7, 6, 1, 0.05); // deeper water can dry up
+
+			cell_dynamics(1, 6, 0, 2, 1, 0.05); // deep water can dry up
+			cell_dynamics(1, 6, 1, 0, 1, 0.05); // deep water can dry up
+			cell_dynamics(1, 6, 7, 1, 1, 0.05); // deep water can dry up
+
+			cell_dynamics(1, 9, 5, 0, 1, 0.35);
+			cell_dynamics(1, 6, 5, 0, 1, 0.35);
+			cell_dynamics(1, 5, 9, 6, 1, 0.35);
+			cell_dynamics(1, 5, 6, 2, 1, 0.35);
+			cell_dynamics(1, 5, 2, 0, 1, 0.35);
+
+			
+			cell_dynamics(1, 3, 9, 6, 1); // remove grass from deep water
+			cell_dynamics(1, 3, 6, 2, 1); // remove grass from deep water
+
+			cell_dynamics(1, 0, 0, 1, 0, 0.01); // spontaneous trees
+			cell_dynamics(1, 0, 0, 2, 0, 0.005); // spontaneous water
+
+			position_dynamics(0.002, 5);
+			position_dynamics(0.004, 4);
+			position_dynamics(0.006, 3);
+			position_dynamics(0.008, 2);
+			position_dynamics(0.010, 1);
+
+
+		}
+
 		
 
 		SDL_RenderClear(renderer);
@@ -80,25 +141,56 @@ void Game::game_loop(){
 						int rx = i * cell + x;
 						int ry = j * cell + y;
 
-						// grid borders
-						if ((x == 0) || (x == cell-1) || (y == 0) || (y == cell-1)){
-							textureBuffer[(ry * width) + rx] = 0xFF000000;
-
-						// TURN THIS INTO A SWITCH?
-						// trees
-						} else if (grid_states[i][j] == 1){
+						switch(grid_states[i][j]){
+							case 1: // trees
 							textureBuffer[(ry * width) + rx] = 0xFF387D1A;
-						// water
-						} else if (grid_states[i][j] == 2){
+							break;
+
+							case 2: // water
 							textureBuffer[(ry * width) + rx] = 0xFF167878;
-						// swamp
-						} else if (grid_states[i][j] == 3){
-							textureBuffer[(ry * width) + rx] = 0xFFC1B993;
-						// earth
-						} else {
+							break;
+
+							case 3: // grass
+							textureBuffer[(ry * width) + rx] = 0xFF81B830;
+							break;
+
+							case 4: // wet earth
+							textureBuffer[(ry * width) + rx] = 0xFF453A2E;
+							break;
+
+							case 5: // swamp
+							textureBuffer[(ry * width) + rx] = 0xFF1F5E43;
+							break;
+
+							case 6: // deep water
+							textureBuffer[(ry * width) + rx] = 0xFF136464;
+							break;
+
+							case 7: // dense forest
+							textureBuffer[(ry * width) + rx] = 0xFF2D6514;
+							break;
+
+							case 8: // fire
+							textureBuffer[(ry * width) + rx] = 0xFFFFAD14;
+							break;
+
+							case 9: // deeper water
+							textureBuffer[(ry * width) + rx] = 0xFF124949;
+							break;
+
+							case 10: // snow
+							textureBuffer[(ry * width) + rx] = 0xFFB1A89F;
+							break;
+							
+							default:
 							textureBuffer[(ry * width) + rx] = 0xFF63513E;
+
 						}
 
+						// grid borders
+						if ((x == 0) || (x == cell-1) || (y == 0) || (y == cell-1)){
+							textureBuffer[(ry * width) + rx] = 0xFF33211E;
+						}
 					}
 				}
 			}

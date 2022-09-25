@@ -12,12 +12,13 @@ public:
 	~Game();
 
 	void game_loop();
-	void cell_dynamics();
+	void cell_dynamics(int size, int x1, int x2, int x3, int t, float p = 1);
+	void position_dynamics(float p, int r);
 
 private:
 	unsigned int width = 1000;
 	unsigned int height = 800;
-	unsigned int cell = 20;
+	unsigned int cell = 10;
 	int nx = width / cell;
 	int ny = height / cell;
 
