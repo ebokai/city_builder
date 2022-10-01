@@ -1,0 +1,2 @@
+// cell painting 
+- mouse button held down should allow drawing while moving mouse

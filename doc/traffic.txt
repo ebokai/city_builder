@@ -1,0 +1,46 @@
+// residential cell
+- generates cars
+
+// industry cell
+- accepts cars
+- generates trucks
+
+// commercial cell
+- accepts trucks
+- accepts cars
+
+// roads
+draw road markings depending on neighbouring roads 
+= this should be straightforward
+= how to avoid calculating this at each step?
+== only update when new road is created
+== only calculate affected cells
+== enumerate road types (left-right, up-down, intersection, t-intersection, L-curve)
+== can be enumerated by 9-bit integers (overlap?)
+== 9-bit integer should only determine middle pixel
+== quick mask convolution of entire map 
+== road = 1, anything else = 0
+
+= how do roads change with cell size? 
+== design should be a function of cell size (automatic scaling)
+
+
+
+// algorithm outline
+create a residential cell
+create a car object 
+pick a random location that accepts cars
+= i.e. find industrial cell
+if none exist, destroy car object
+do route finding 
+	- graph based network 
+	- find path between nodes
+	- store calculated paths between nodes to reduce overhead
+	= that way, routes can be build out of pre-calculated segments
+if a route is succesfully generated, animate cars driving 
+animation should have sub-cell (pixel accurate) resolution 
+return trip is simply inverse trip 
+
+// implementation 
+- how often should route be calculated? 
+= on creation of new valid cells? 

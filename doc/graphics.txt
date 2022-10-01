@@ -1,0 +1,9 @@
+// grid
+- draw grid on a separate texture (enable transparency)
+
+// sub-cell features
+- enable drawing on sub-cell level 
+- spill-over from adjacent cells 
+= feature blending
+- should be drawn once 
+= persistent features 
