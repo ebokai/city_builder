@@ -24,6 +24,8 @@ draw road markings depending on neighbouring roads
 = how do roads change with cell size? 
 == design should be a function of cell size (automatic scaling)
 
+= roads should overrule grid markings
+
 
 
 // algorithm outline
