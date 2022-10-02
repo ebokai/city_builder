@@ -145,7 +145,7 @@ void Game::game_loop(){
 
 						// grid borders
 						if ((x == 0) || (x == cell-1) || (y == 0) || (y == cell-1)){
-							gridBuffer[(ry * width) + rx] = 0x7733211E;
+							gridBuffer[(ry * width) + rx] = 0x4433211E;
 						}
 					}
 				}

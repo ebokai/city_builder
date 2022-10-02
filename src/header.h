@@ -31,7 +31,7 @@ private:
 	// screen settings
 	unsigned int width = 1600;
 	unsigned int height = 900;
-	int cell = 10;
+	int cell = 20;
 	int nx = width / cell;
 	int ny = height / cell;
 

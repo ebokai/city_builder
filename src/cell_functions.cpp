@@ -31,7 +31,7 @@ void Game::cell_dynamics(int size, int x1, int x2, int x3, int t, float p){
 		}
 	}
 
-	if ((this_cell == x1) && (types[x2] > t) && (u < p)){
+	if ((this_cell == x1) && (types[x2] >= t) && (u < p)){
 		grid_states[i][j] = x3;
 	}
 }
