@@ -6,7 +6,7 @@ Game::Game(){
 	window = SDL_CreateWindow("", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_OPENGL);
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	SDL_SetHint(SDL_HINT_RENDER_BATCHING, "1");
-	// SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 	SDL_RenderClear(renderer);
 	SDL_RenderPresent(renderer);
@@ -32,8 +32,11 @@ void Game::game_loop(){
 	int n_updates_per_frame = 600;
 
 	SDL_Texture *texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, width, height);
-	// SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+	SDL_Texture *grid = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, width, height);
+	SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+	SDL_SetTextureBlendMode(grid, SDL_BLENDMODE_BLEND);
 	uint32_t *textureBuffer = new uint32_t[width * height];
+	uint32_t *gridBuffer = new uint32_t[width * height];
 
 
 	int frame = 0;
@@ -140,17 +143,19 @@ void Game::game_loop(){
 
 						}
 
-						// // grid borders
-						// if ((x == 0) || (x == cell-1) || (y == 0) || (y == cell-1)){
-						// 	textureBuffer[(ry * width) + rx] = 0xFF33211E;
-						// }
+						// grid borders
+						if ((x == 0) || (x == cell-1) || (y == 0) || (y == cell-1)){
+							gridBuffer[(ry * width) + rx] = 0x7733211E;
+						}
 					}
 				}
 			}
 		}
 
 		SDL_UpdateTexture(texture, NULL, textureBuffer, width * sizeof(uint32_t));
+		SDL_UpdateTexture(grid, NULL, gridBuffer, width * sizeof(uint32_t));
 		SDL_RenderCopy(renderer, texture, NULL, NULL);
+		SDL_RenderCopy(renderer, grid, NULL, NULL);
 		SDL_RenderPresent(renderer);
 
 	}
