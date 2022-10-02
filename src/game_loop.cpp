@@ -11,7 +11,18 @@ Game::Game(){
 	SDL_RenderClear(renderer);
 	SDL_RenderPresent(renderer);
 
+	// initialize grid
 	grid_states.resize(nx, vector<int>(ny, 0));
+
+	// initialize temperature
+	temperature.resize(nx, vector<float>(ny, 0));
+	for(int i = 0; i < nx; i++){
+		for(int j = 0; j < ny; j++){
+			temperature[i][j] = 30 * sin(PI * j / ny);
+		}
+	}
+
+
 }
 
 Game::~Game(){
@@ -29,13 +40,16 @@ void Game::game_loop(){
 
 	int x_mouse, y_mouse;
 	int x_cell, y_cell;
-	int n_updates_per_frame = 600;
+	int n_updates_per_frame = 100;
 
+	// main texture
 	SDL_Texture *texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, width, height);
-	SDL_Texture *grid = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, width, height);
 	SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
-	SDL_SetTextureBlendMode(grid, SDL_BLENDMODE_BLEND);
 	uint32_t *textureBuffer = new uint32_t[width * height];
+
+	// grid texture
+	SDL_Texture *grid = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, width, height);
+	SDL_SetTextureBlendMode(grid, SDL_BLENDMODE_BLEND);
 	uint32_t *gridBuffer = new uint32_t[width * height];
 
 

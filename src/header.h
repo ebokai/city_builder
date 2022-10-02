@@ -4,6 +4,7 @@
 #include <vector>
 #include <time.h>
 #include <map>
+#include <cmath>
 
 using namespace std;
 
@@ -25,8 +26,11 @@ public:
 	
 	// cell dynamics
 	void cell_dynamics(int size, int x1, int x2, int x3, int t, float p = 1);
+	void cell_dynamics_temp(int x1, int x2, int t);
 
 private:
+
+	const float PI = 3.141592654f;
 
 	// screen settings
 	unsigned int width = 1600;
@@ -38,6 +42,7 @@ private:
 	// cell settings
 	const int n_types = 14;
 	vector<vector<int>> grid_states;
+	vector<vector<float>> temperature; 
 
 	// input settings
 	int cell_type = 1;
